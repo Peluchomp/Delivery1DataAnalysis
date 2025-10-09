@@ -6,7 +6,8 @@ using UnityEngine.Networking;
 
 public class SendToServer : MonoBehaviour
 {
-    public const string serverUrl = "https://citmalumnes.upc.es/~paums3/connectToDatabase.php";
+    public const string newPlayerSend = "https://citmalumnes.upc.es/~paums3/connectToDatabase.php";
+    private string newSessionSend = "https://citmalumnes.upc.es/~paums3/SessionServerRequest.php";
 
     private void OnEnable()
     {
@@ -36,7 +37,7 @@ public class SendToServer : MonoBehaviour
             arg4,
             time = time.ToString("o")
         };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data)));
+        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data),newPlayerSend));
     }
 
     private void OnNewSessionSend(DateTime time, uint id)
@@ -48,7 +49,7 @@ public class SendToServer : MonoBehaviour
             time = time.ToString("o"),
             id
         };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data)));
+        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newSessionSend));
     }
 
     private void OnEndSessionSend(DateTime time, uint id)
@@ -60,7 +61,7 @@ public class SendToServer : MonoBehaviour
             time = time.ToString("o"),
             id
         };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data)));
+        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newPlayerSend));
     }
 
     private void OnItemBoughtSend(int itemId, DateTime time, uint id)
@@ -73,10 +74,10 @@ public class SendToServer : MonoBehaviour
             time = time.ToString("o"),
             id
         };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data)));
+        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newPlayerSend));
     }
 
-    private IEnumerator SendDataToServer(string jsonData)
+    private IEnumerator SendDataToServer(string jsonData, string serverUrl)
     {
         using (UnityWebRequest www = new UnityWebRequest(serverUrl, "POST"))
         {

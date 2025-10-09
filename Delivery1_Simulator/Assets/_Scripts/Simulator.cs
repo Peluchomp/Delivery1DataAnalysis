@@ -72,6 +72,7 @@ public class Simulator : MonoBehaviour
 
         _currentDate = GetNewPlayerDate();
         AddNewPlayer(_currentDate);
+        AddNewSession(0);
     }
 
     
