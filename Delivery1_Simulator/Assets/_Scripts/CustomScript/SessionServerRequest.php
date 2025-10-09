@@ -14,8 +14,14 @@ die("Connection failed: " . $conn->connect_error);
 }
 echo "Connected succcessfully";
 
+$userid = $_POST["UserID"];
+$sesionid = $_POST["SessionID"];
+$lengthofsession = $_POST["LengthOfSession"];
+$time = $_POST["Time"];
+
+
 $sql = "INSERT INTO Sessions (UserID, SessionID, LengthOfSession, Time)
-VALUES (0, 0, 20, '2025-10-9 09:38:23.230')";
+VALUES ('$userid', '$sesionid', '$lengthofsession', '$time')";
 
 if ($conn->query($sql) === TRUE) {
 	echo "New record created successfully";

@@ -25,78 +25,75 @@ public class SendToServer : MonoBehaviour
         Simulator.OnBuyItem -= OnItemBoughtSend;
     }
 
-    private void OnNewPlayerSend(string arg1, string arg2, int arg3, float arg4, DateTime time)
+    private void OnNewPlayerSend(string userId, string age, int gender, float country, DateTime time)
     {
         Debug.Log("Custom new player recieved");
-        var data = new
-        {
-            type = "new_player",
-            arg1,
-            arg2,
-            arg3,
-            arg4,
-            time = time.ToString("o")
-        };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data),newPlayerSend));
+        var fields = new Dictionary<string, string>
+    {
+        { "UserID", "0" },
+        { "Age", age },
+        { "Gender", gender.ToString() },
+        { "Country", country.ToString("G", System.Globalization.CultureInfo.InvariantCulture) }
+    };
+        StartCoroutine(SendDataToServer(fields, newPlayerSend));
     }
 
     private void OnNewSessionSend(DateTime time, uint id)
     {
         Debug.Log("Custom new session recieved");
-        var data = new
-        {
-            type = "new_session",
-            time = time.ToString("o"),
-            id
-        };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newSessionSend));
+        var fields = new Dictionary<string, string>
+               {
+                   { "UserID", id.ToString() },
+                   { "SessionID", "0" },
+                   { "LengthOfSession", "23" },
+                   { "Time", time.ToString("yyyy-MM-dd HH:mm:ss.fff") }
+               };
+        StartCoroutine(SendDataToServer(fields, newSessionSend));
     }
 
     private void OnEndSessionSend(DateTime time, uint id)
     {
         Debug.Log("Custom end session recieved");
-        var data = new
-        {
-            type = "end_session",
-            time = time.ToString("o"),
-            id
-        };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newPlayerSend));
+        var fields = new Dictionary<string, string>
+    {
+        { "Type", "end_session" },
+        { "Time", time.ToString("yyyy-MM-dd HH:mm:ss.fff") },
+        { "UserID", id.ToString() }
+    };
+        StartCoroutine(SendDataToServer(fields, newPlayerSend));
     }
 
     private void OnItemBoughtSend(int itemId, DateTime time, uint id)
     {
         Debug.Log("Custom item bought recieved");
-        var data = new
-        {
-            type = "item_bought",
-            itemId,
-            time = time.ToString("o"),
-            id
-        };
-        StartCoroutine(SendDataToServer(JsonUtility.ToJson(data), newPlayerSend));
+        var fields = new Dictionary<string, string>
+    {
+        { "Type", "item_bought" },
+        { "ItemID", itemId.ToString() },
+        { "Time", time.ToString("yyyy-MM-dd HH:mm:ss.fff") },
+        { "UserID", id.ToString() }
+    };
+        StartCoroutine(SendDataToServer(fields, newPlayerSend));
     }
 
-    private IEnumerator SendDataToServer(string jsonData, string serverUrl)
+    private IEnumerator SendDataToServer(Dictionary<string,string> fields, string serverUrl)
     {
-        using (UnityWebRequest www = new UnityWebRequest(serverUrl, "POST"))
+        WWWForm form = new WWWForm();
+        foreach (var field in fields)
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
+            form.AddField(field.Key, field.Value);
+        }
 
-            yield return www.SendWebRequest();
+        UnityWebRequest www = UnityWebRequest.Post(serverUrl, form);
+        yield return www.SendWebRequest();
 
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log($"Datos enviados correctamente al servidor: { www.downloadHandler.text}");
-                
-            }
-            else
-            {
-                Debug.LogError($"Error al enviar datos: {www.error}");
-            }
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error sending data to server: " + www.error);
+        }
+        else
+        {
+            Debug.Log("Data successfully sent to server: " + www.downloadHandler.text);
         }
     }
 }
