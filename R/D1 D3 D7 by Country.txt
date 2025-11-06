@@ -1,0 +1,28 @@
+> data <- read.csv("~/GitHub/Delivery1DataAnalysis/CSV Tables/D1__D3__D7_for_Country.csv")
+> 
+> avg_d1 <- aggregate(d1_retention_percentage ~ Country, data = data, FUN = mean)
+> avg_d3 <- aggregate(d3_retention_percentage ~ Country, data = data, FUN = mean)
+> avg_d7 <- aggregate(d7_retention_percentage ~ Country, data = data, FUN = mean)
+> 
+> merged_data <- merge(avg_d1, avg_d3, by = "Country")
+> merged_data <- merge(merged_data, avg_d7, by = "Country")
+> 
+> rownames(merged_data) <- merged_data$Country
+> data_to_plot <- merged_data[, c("d1_retention_percentage", "d3_retention_percentage", "d7_retention_percentage")]
+> colnames(data_to_plot) <- c("D1", "D3", "D7")
+> 
+> data_to_plot_matrix <- as.matrix(data_to_plot)
+> 
+> op <- par(mar = c(10, 4, 4, 2) + 0.1)
+> 
+> barplot(t(data_to_plot_matrix),
++         main = "Retention by Country (D1, D3, D7)",
++         ylab = "Retention (%)",
++         col = c("lightblue", "blue", "darkblue"),
++         beside = TRUE,
++         las = 2,
++         cex.names = 0.7,
++         legend.text = c("D1", "D3", "D7"),
++         args.legend = list(x = "topright", bty = "n", cex = 0.8))
+> 
+> par(op)
