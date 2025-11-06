@@ -1,0 +1,28 @@
+data <- read.csv("C:/Users/pau/Downloads/ARPPU_for_Country.csv")
+
+num_countries <- nrow(data)
+colors <- hcl.colors(num_countries, palette = "Spectral")
+
+par(mar = c(7, 4, 4, 2) + 0.1)
+
+max_height <- max(data$ARPPU_for_Country)
+ylim_top <- max_height * 1.15
+
+bp <- barplot(data$ARPPU_for_Country,
+              names.arg = data$Country,
+              xlab = "Country",
+              ylab = "ARPPU",
+              main = "ARPPU by Country",
+              col = colors,
+              las = 2,
+              ylim = c(0, ylim_top))
+
+text(x = bp,
+     y = data$ARPPU_for_Country,
+     labels = data$TotalPayingUsers,
+     pos = 3,
+     cex = 0.8)
+
+legend("topleft",
+       legend = "Value on bar = Total Paying Users",
+       bty = "n")

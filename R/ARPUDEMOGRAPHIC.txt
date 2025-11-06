@@ -1,0 +1,14 @@
+arpu_data <- read.csv("C:/Users/pau/Downloads/ARPUDEMOGRAPHIC.csv")
+
+num_countries <- nrow(arpu_data)
+colors <- hcl.colors(num_countries, palette = "Spectral")
+
+par(mar = c(7, 4, 4, 2) + 0.1)
+
+barplot(arpu_data$ARPU_for_Country.1, 
+        names.arg = arpu_data$Country, 
+        xlab = "Country", 
+        ylab = "ARPU", 
+        main = "ARPU by Country",
+        col = colors,
+        las = 2)
