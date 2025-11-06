@@ -1,0 +1,25 @@
+dau_data <- read.csv("C:/Users/pau/Downloads/DAU.csv")
+
+dau_data$Dia <- as.Date(dau_data$Dia)
+ 
+dau_data$DayNum <- as.numeric(dau_data$Dia - min(dau_data$Dia))
+ 
+model <- lm(DAU ~ DayNum, data = dau_data)
+ 
+plot(dau_data$Dia, dau_data$DAU, 
+     xlab = "Date", 
+     ylab = "DAU", 
+     main = "DAU", 
+     pch = 19, 
+     col = "grey")
+ 
+p_conf <- predict(model, newdata = dau_data, interval = "confidence", level = 0.95)
+ 
+lines(dau_data$Dia, p_conf[, 1], col = "green", lwd = 2)
+lines(dau_data$Dia, p_conf[, 2], col = "blue")
+lines(dau_data$Dia, p_conf[, 3], col = "blue")
+ 
+p_pred <- predict(model, newdata = dau_data, interval = "prediction", level = 0.95)
+
+lines(dau_data$Dia, p_pred[, 2], col = "red", lty = 2)
+lines(dau_data$Dia, p_pred[, 3], col = "red", lty = 2)
