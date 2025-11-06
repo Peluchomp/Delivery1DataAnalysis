@@ -1,0 +1,16 @@
+> data <- read.csv("~/GitHub/Delivery1DataAnalysis/CSV Tables/D1_D3_D7.csv")
+> 
+> avg_d1 <- mean(data$d1_retention_percentage, na.rm = TRUE)
+> avg_d3 <- mean(data$d3_retention_percentage, na.rm = TRUE)
+> avg_d7 <- mean(data$d7_retention_percentage, na.rm = TRUE)
+> 
+> avg_retention <- c(avg_d1, avg_d3, avg_d7)
+> 
+> bp <- barplot(avg_retention,
++               names.arg = c("D1", "D3", "D7"),
++               main = "D1 & D3 & D7",
++               ylab = "Retention (%)",
++               col = c("lightblue", "blue", "darkblue"),
++               ylim = c(0, max(avg_retention) * 1.2))
+> 
+> text(bp, avg_retention + 1, labels = round(avg_retention, 1), cex = 0.9)
