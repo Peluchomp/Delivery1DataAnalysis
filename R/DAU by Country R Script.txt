@@ -1,0 +1,17 @@
+> data <- read.csv("~/GitHub/Delivery1DataAnalysis/CSV Tables/DAU_Demographic.csv")
+> 
+> avg_dau <- aggregate(DAU ~ Pais, data = data, FUN = mean)
+> 
+> avg_dau <- avg_dau[order(avg_dau$DAU, decreasing = TRUE), ]
+> 
+> op <- par(mar = c(10, 4, 4, 2) + 0.1)
+> 
+> barplot(avg_dau$DAU,
++         names.arg = avg_dau$Pais,
++         main = "Average DAU by Country",
++         ylab = "Average DAU",
++         col = "steelblue",
++         las = 2,
++         cex.names = 0.8)
+> 
+> par(op)

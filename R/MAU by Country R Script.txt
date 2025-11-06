@@ -1,0 +1,17 @@
+> data <- read.csv("~/GitHub/Delivery1DataAnalysis/CSV Tables/MAU_Demographic.csv")
+> 
+> avg_mau <- aggregate(MAU_Rolling30Day ~ Pais, data = data, FUN = mean)
+> 
+> avg_mau <- avg_mau[order(avg_mau$MAU_Rolling30Day, decreasing = TRUE), ]
+> 
+> op <- par(mar = c(10, 4, 4, 2) + 0.1)
+> 
+> barplot(avg_mau$MAU_Rolling30Day,
++         names.arg = avg_mau$Pais,
++         main = "Average MAU by Country",
++         ylab = "Average MAU",
++         col = "steelblue",
++         las = 2,
++         cex.names = 0.8)
+> 
+> par(op)
