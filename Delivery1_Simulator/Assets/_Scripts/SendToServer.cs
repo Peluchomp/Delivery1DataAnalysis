@@ -5,7 +5,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class SendToServer : MonoBehaviour
+public class SendToServerFake : MonoBehaviour
 {
 
     public string newPlayerUrl = "https://citmalumnes.upc.es/~didacgp/NewPlayerScript.php";
@@ -37,7 +37,7 @@ public class SendToServer : MonoBehaviour
             { "country", arg2 },
             { "age", arg3.ToString() },
             { "gender", arg4.ToString(CultureInfo.InvariantCulture) },
-            { "time", time.ToString("o") }
+            { "time", time.ToString("yyyy-MM-dd HH:mm:ss") }
         };
 
         StartCoroutine(UploadNewPlayerToServer(fields, newPlayerUrl));
@@ -52,7 +52,7 @@ public class SendToServer : MonoBehaviour
         {
             { "type", "new_session" },
             { "player_id", arg2.ToString() },
-            { "time", time.ToString("o") }
+            { "time", time.ToString("yyyy-MM-dd HH:mm:ss") }
         };
 
         StartCoroutine(UploadNewSessionToServer(fields, newSessionUrl));
@@ -66,7 +66,7 @@ public class SendToServer : MonoBehaviour
         {
             { "type", "end_session" },
             { "session_id", arg2.ToString() },
-            { "time", time.ToString("o") }
+            { "time", time.ToString("yyyy-MM-dd HH:mm:ss") }
         };
 
         StartCoroutine(UploadEndSessionToServer(fields, endSessionUrl));
@@ -81,7 +81,7 @@ public class SendToServer : MonoBehaviour
             { "type", "buy_item" },
             { "item_id", arg1.ToString() },
             { "session_id", arg3.ToString() },
-            { "time", time.ToString("o") }
+            { "time", time.ToString("yyyy-MM-dd HH:mm:ss") }
         };
 
         StartCoroutine(UploadBuyItemToServer(fields, buyItemUrl));
