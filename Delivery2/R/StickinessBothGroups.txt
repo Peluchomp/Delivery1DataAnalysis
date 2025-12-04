@@ -1,0 +1,48 @@
+my_data$Day <- as.Date(my_data$Day)
+
+data_a <- my_data[my_data$TestGroup == "A", ]
+data_b <- my_data[my_data$TestGroup == "B", ]
+
+model_a <- lm(Stickiness_Percentage ~ Day, data = data_a)
+date_seq_a <- seq(min(data_a$Day), max(data_a$Day), length.out = 100)
+pred_a <- predict(model_a, newdata = data.frame(Day = date_seq_a), interval = "confidence")
+p_val_a <- summary(model_a)$coefficients[2, 4]
+
+model_b <- lm(Stickiness_Percentage ~ Day, data = data_b)
+date_seq_b <- seq(min(data_b$Day), max(data_b$Day), length.out = 100)
+pred_b <- predict(model_b, newdata = data.frame(Day = date_seq_b), interval = "confidence")
+p_val_b <- summary(model_b)$coefficients[2, 4]
+
+color_a_fill <- rgb(1, 0, 0, alpha = 0.2)
+color_b_fill <- rgb(0, 0, 1, alpha = 0.2)
+color_a_line <- "darkred"
+color_b_line <- "lightblue"
+
+txt_a <- paste0("Group A (p = ", format.pval(p_val_a, digits=2), ")")
+txt_b <- paste0("Group B (p = ", format.pval(p_val_b, digits=2), ")")
+
+y_min <- min(c(data_a$Stickiness_Percentage, data_b$Stickiness_Percentage))
+y_max <- max(c(data_a$Stickiness_Percentage, data_b$Stickiness_Percentage))
+
+plot(x = data_a$Day, y = data_a$Stickiness_Percentage, type = "n",
+     ylim = c(y_min, y_max),
+     main = "Stickiness Trends: Group A vs Group B",
+     xlab = "Date", ylab = "Stickiness %")
+
+polygon(c(date_seq_a, rev(date_seq_a)), c(pred_a[,"lwr"], rev(pred_a[,"upr"])),
+        col = color_a_fill, border = NA)
+lines(data_a$Day, data_a$Stickiness_Percentage, col = "pink", lwd = 1)
+points(data_a$Day, data_a$Stickiness_Percentage, pch = 16, col = color_a_line, cex=0)
+lines(date_seq_a, pred_a[,"fit"], col = "red", lwd = 2)
+
+polygon(c(date_seq_b, rev(date_seq_b)), c(pred_b[,"lwr"], rev(pred_b[,"upr"])),
+        col = color_b_fill, border = NA)
+lines(data_b$Day, data_b$Stickiness_Percentage, col = "blue", lwd = 1)
+points(data_b$Day, data_b$Stickiness_Percentage, pch = 16, col = color_b_line, cex=0)
+lines(date_seq_b, pred_b[,"fit"], col = "darkblue", lwd = 2)
+
+legend("topleft", 
+       legend = c(txt_a, txt_b),
+       fill = c(color_a_fill, color_b_fill),
+       border = NA,
+       bty = "n")
